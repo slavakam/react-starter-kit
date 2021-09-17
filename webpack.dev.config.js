@@ -5,35 +5,31 @@ module.exports = {
   mode: 'development',
   entry: path.join(__dirname, 'src', 'index.js'),
   output: {
-    path:path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'assets/scripts/[name].bundle.js',
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', 'less'],
   },
   devServer: {
-    static: './dist',
+    historyApiFallback: true,
+    port: 3000,
+    hot: true,
+    static: '/',
   },
   module: {
     rules: [
       {
-        test: /\.?js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env', '@babel/preset-react']
-          }
-        }
+        loader: 'babel-loader',
       },
       {
         test: /\.less$/,
         use: [
-          {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'css-loader',
-          },
-          {
-            loader: 'less-loader',
-          }
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          { loader: 'less-loader' }
         ]
       }
     ]
@@ -41,6 +37,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'public', 'index.html'),
+      favicon: path.join(__dirname, 'public', 'favicon.ico'),
+      filename: 'index.html',
     }),
   ],
 }
