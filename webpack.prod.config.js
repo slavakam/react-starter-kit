@@ -1,23 +1,20 @@
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: path.join(__dirname, 'src', 'index.js'),
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'assets/scripts/[name].js',
+    filename: 'assets/scripts/[name]-[contenthash].min.js',
   },
   resolve: {
     extensions: ['.js', '.jsx', 'less'],
-  },
-  devServer: {
-    historyApiFallback: true,
-    port: 3000,
-    hot: true,
-    static: '/',
   },
   module: {
     rules: [
@@ -28,20 +25,20 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
       },
       {
         test: /\.(png|jpg|svg|gif)$/,
         type: 'asset',
         generator: {
-          filename: 'assets/images/[name][ext]',
+          filename: 'assets/images/[name]-[contenthash][ext]',
         },
       },
       {
         test: /\.(ttf|woff|woff2|eot)$/,
         type: 'asset',
         generator: {
-          filename: 'assets/fonts/[name][ext]',
+          filename: 'assets/fonts/[name]-[contenthash][ext]',
         },
       },
     ],
@@ -51,12 +48,26 @@ module.exports = {
       chunks: 'all',
       name: 'vendor',
     },
+    minimizer: [
+      new CssMinimizerPlugin(),
+      new TerserWebpackPlugin({
+        extractComments: false,
+        terserOptions: {
+          output: {
+            comments: false,
+          },
+        },
+      }),
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'public', 'index.html'),
       favicon: path.join(__dirname, 'public', 'favicon.ico'),
       filename: 'index.html',
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'assets/styles/main-[contenthash].min.css',
     }),
     new CleanWebpackPlugin(),
   ],
