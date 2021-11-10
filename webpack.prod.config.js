@@ -16,6 +16,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', 'less'],
   },
+  context: path.resolve(__dirname, 'src'),
   module: {
     rules: [
       {

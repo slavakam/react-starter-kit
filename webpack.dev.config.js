@@ -13,6 +13,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', 'less'],
   },
+  context: path.resolve(__dirname, 'src'),
   devServer: {
     historyApiFallback: true,
     port: 3000,
